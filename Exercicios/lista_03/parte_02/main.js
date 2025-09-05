@@ -7,7 +7,7 @@ const compraDolar = compraInternacional.toLocaleString("pt-br",{
     currency: "USD"
 })
 
-const compra = compraInternacional * 0.176;
+const compra = compraInternacional * 0.18467;
 
 document.write(`<p> O valor da sua compra em dólar é: ${compra.toLocaleString("en",{
     style: "currency",
