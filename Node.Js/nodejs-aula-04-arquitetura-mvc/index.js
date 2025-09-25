@@ -1,15 +1,22 @@
 // Importando o Express (framework)
-const express = require("express");
+import express from "express"
 // Iniciando o Express na variável "app"
 const app = express();
+
+
+// Importando os Controller (onde estão as rotas e onde é tratado as requisições)
+import ClientesController from "./controllers/ClientesController.js"
 
 // CONFIGURANDO O EJS
 app.set('view engine', 'ejs')
 // Definindo a pasta PUBLIC para Arquivos Estáticos
 app.use(express.static("public"));
 
-// Criando a primeira rota do site (ROTA PRINCIPAL)
-// REQ = Trata a REQUISIÇÃO / RES = Trata a RESPOSTA
+// DEFININDO O USO DAS ROTAS QUE ESTÃO NOS CONTROLLERS
+app.use("/", ClientesController)
+
+// (ROTA PRINCIPAL) - Criando a primeira rota do site
+// REQ = Trata a REQUISIÇÃO / RES = Trata a Resposta
 app.get("/", (req, res) => {
    res.render("index")
 });
@@ -31,22 +38,7 @@ app.get("/produtos", (req, res) => {
   });
 });
 
-// ROTA DE CLIENTES
-app.get("/clientes", (req, res) => {
-  const clientes =[
-    {nome: "Ricardo", cpf:"123.456.789-00", endereco:
-      "Rua das Flores, 34" },
-    {nome: "Isaac", cpf:"123.456.789-00", endereco:
-      "Rua Diamante, 100" },
-    {nome: "Ana Flávia", cpf:"123.456.789-00", endereco:
-      "Rua Ceará, 30" },
-    {nome: "Renan", cpf:"123.456.789-00", endereco:
-      "Rua Curitiba, 22" },
-  ];
-    res.render("clientes", {
-      clientes : clientes
-    })
-});
+
 
 // ROTA DE PERFIL
 app.get("/perfil", (req, res) => {

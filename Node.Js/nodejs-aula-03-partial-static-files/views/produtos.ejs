@@ -1,0 +1,25 @@
+<%- include ('partials/header.ejs')%>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+</head>
+<body>
+    <h1>Bem-vindo a página de produtos!</h1>    
+
+        <h2>Lista de produtos:</h2>
+        <%#= produtos %>
+
+        <!-- Percorrendo a lista de produtos com forEach---->
+        <ul>
+        <% produtos.forEach(produto => { %>
+            <li>Produto: <%= produto.nome %></li>
+            <li>R$<%= produto.preco.toLocaleString("pt-br",{style: "currency", currency: "BRL"}) %></li>
+         <br>
+         <% }) %>
+        </ul> 
+    
+        <br></br>
+        <a href="/"><< Voltar</a>
+<%- include ('partials/footer.ejs')%>
+</html>
