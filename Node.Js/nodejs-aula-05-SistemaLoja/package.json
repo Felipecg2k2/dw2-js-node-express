@@ -1,7 +1,6 @@
 {
   "name": "nossaloja",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,5 +15,7 @@
     "nodemon": "^3.0.1",
     "sequelize": "^6.37.7"
   },
-  "type": "module"
+  "type": "module",
+  "keywords": [],
+  "description": ""
 }

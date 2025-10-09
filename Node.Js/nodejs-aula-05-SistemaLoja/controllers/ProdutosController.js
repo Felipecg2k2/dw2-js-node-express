@@ -1,13 +1,16 @@
 import express from "express";
 const router = express.Router();
-import produtos from "../models/Produto.js";
 
 // ROTA PRODUTOS
 router.get("/produtos", function (req, res) {
-  produtos.findAll().then((produtos)=>{
-      res.render("produtos", {
-      produtos: produtos,
-    });
+  const produtos = [
+    { nome: "Celular Motorola E22", preco: 1200, categoria: "Eletroportáteis" },
+    { nome: "Tablet Samsung", preco: 900, categoria: "Eletrônicos" },
+    { nome: "Notebook Lenovo", preco: 3200, categoria: "Computadores" },
+    { nome: "Fone Bluetooth", preco: 150, categoria: "Periféricos" },
+  ];
+  res.render("produtos", {
+    produtos: produtos,
   });
 });
 
