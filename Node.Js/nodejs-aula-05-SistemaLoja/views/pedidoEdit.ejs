@@ -1,0 +1,33 @@
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navbar.ejs') %>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>Alterar pedido</h1>
+        </div>
+        <div class="card-body">
+            <!-- Formulário de edição -->
+            <form action="/pedidos/update" method="POST">
+                <input type="hidden" name="id" value="<%= pedido.id %>">
+
+                <div class="mb-3">
+                    <label>Número do pedido:</label>
+                    <input type="text" name="numero" placeholder="Insira o número do pedido" class="form-control" value="<%= pedido.numero %>" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label>Valor do pedido:</label>
+                    <input type="text" name="valor" placeholder="Insira o valor do pedido" class="form-control" value="<%= pedido.valor %>" required>
+                </div>
+                
+                <div class="mb-3">
+                    <input onclick="return confirm('Confirma as alterações realizadas para o pedido <%= pedido.numero %>?')" type="submit" class="btn btn-warning" value="Alterar">
+                    <a href="/pedidos" class="btn btn-danger">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ('partials/footer.ejs') %>
