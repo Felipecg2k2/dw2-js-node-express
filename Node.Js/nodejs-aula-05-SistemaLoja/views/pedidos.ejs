@@ -1,7 +1,61 @@
 <%- include ('partials/header.ejs') %>
-<%- include ('partials/navbar.ejs') %>
+    <%- include ('partials/navbar.ejs') %>
 
     <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Cadastrar pedido</h1>
+            </div>
+            <div class="card-body">
+        <form action="/pedidos/new" method="POST">
+        <div class="mb-3">
+            <label>Número do pedido:</label>
+            <input type="int" name="numero" placeholder="Insira o número do pedido" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label>Valor do pedido:</label>
+            <input type="text" name="valor" placeholder="Insira o valor do pedido" class="form-control" required>
+        </div>
+        </div>
+        
+        <div class="mb-3">
+            <input type="submit" class="btn btn-success" value="Cadastrar" style="margin-left: 20px;">
+            <input type="reset" class="btn btn-danger" value="Limpar" >
+        </div>
+
+        <style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  th, td {
+    padding: 10px 15px;
+    text-align: left;
+    word-wrap: break-word;
+  }
+
+  th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+  }
+
+  th:nth-child(2), td:nth-child(2) {
+    width: 40%;
+  }
+
+  th:nth-child(3), td:nth-child(3) {
+    width: 25%;
+  }
+
+  th:nth-child(4), td:nth-child(4),
+  th:nth-child(5), td:nth-child(5) {
+    width: 15%;
+  }
+</style>
+
+    </form>
         <div class="card">
             <div class="card-header">
                 <h1>Pedidos</h1>
@@ -13,6 +67,7 @@
                             <th></th>
                             <th>Número:</th>
                             <th>Valor:</th>
+                            <th colspan="2" style="text-align: center;">Ações:</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -21,8 +76,22 @@
                             <td><img src="imgs/order.png" width="30px"></td>
                             <td><%= pedido.numero %></td>
                             <td><%= pedido.valor.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}) %></td>
+                            <td>
+                                <a href="/pedidos/edit/<%= pedido.id %>">
+                                    <button class="btn btn-warning">
+                                        Editar
+                                    </button>
+                                    </a>
+                            </td>
+                                <td>
+                                    <a href="/pedido/delete/<%= pedido.id %>">
+                                        <button onclick="return confirm('Deseja mesmo excluir o pedido <%= pedido.numero %>?')" class="btn btn-danger">
+                                            Excluir
+                                    </button>
+                                </a>
+                            </td>
                         </tr>
-                        <% }) %>
+                        <% }) %>  
                     </tbody>
                 </table>
             </div>
