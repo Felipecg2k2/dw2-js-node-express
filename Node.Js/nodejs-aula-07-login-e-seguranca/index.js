@@ -11,11 +11,11 @@ import ClientesController from "./controllers/ClientesController.js"
 import PedidosController from "./controllers/PedidosController.js"
 import ProdutosController from "./controllers/ProdutosController.js"
 import UsersController from "./controllers/UsersController.js"
-
+import Auth from "./middleware/Auth.js"
 // Importando os Models (ADICIONE User)
 import Cliente from "./models/Cliente.js"
 import Pedido from "./models/Pedido.js"
-import User from "./models/User.js" // ✅ ADICIONE ESTA LINHA
+import User from "./models/User.js"
 
 // Importando os relacionamentos
 import defineAssociations from "./config/associations.js"
@@ -70,7 +70,7 @@ app.use("/", ProdutosController)
 app.use("/", UsersController)
 
 // ROTA PRINCIPAL
-app.get("/", function(req,res){
+app.get("/", Auth, function(req,res){
     res.render("index")
 })
 
