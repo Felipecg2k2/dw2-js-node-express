@@ -5,86 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= titulo %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .custom-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .custom-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-view {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-edit {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-add {
+            background-color: #2ecc71;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-add:hover {
+            background-color: #27ae60;
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
 
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Gerenciar Pokémons</h1>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPokemon">
-                ➕ Adicionar Pokémon
-            </button>
-        </div>
-
-        <!-- ✅ CORREÇÃO: Verificação segura do error -->
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="alert alert-danger">
-                <%= error %>
+    <div class="container mt-4">
+        <div class="custom-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1>Gerenciar Pokémons</h1>
+                    <p class="text-muted">Sistema completo de gerenciamento de Pokémons cadastrados</p>
+                </div>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPokemon">
+                    ➕ Adicionar Pokémon
+                </button>
             </div>
-        <% } %>
 
-        <!-- LISTA DE POKÉMONS -->
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                Pokémons Cadastrados
-            </div>
-            <div class="card-body p-0">
-                <% if (pokemons && pokemons.length > 0) { %>
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Número</th>
-                                <th>Nome</th>
-                                <th>Tipo</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% pokemons.forEach((p) => { %>
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <!-- LISTA DE POKÉMONS -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Pokémons Cadastrados</h5>
+                </div>
+                <div class="card-body p-0">
+                    <% if (pokemons && pokemons.length > 0) { %>
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <td><%= p.numero %></td>
-                                    <td><%= p.nome %></td>
-                                    <td>
-                                        <span class="badge bg-info">
-                                            <%= p.tipo1 %><% if (p.tipo2) { %>/<%= p.tipo2 %><% } %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <!-- BOTÃO EDITAR -->
-                                        <button class="btn btn-sm btn-warning me-1" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalEditar"
-                                                data-id="<%= p.id %>"
-                                                data-numero="<%= p.numero %>"
-                                                data-nome="<%= p.nome %>"
-                                                data-tipo1="<%= p.tipo1 %>"
-                                                data-tipo2="<%= p.tipo2 %>">
-                                            ✏️
-                                        </button>
-                                        
-                                        <!-- BOTÃO DELETAR -->
-                                        <form action="/pokemons/deletar/<%= p.id %>" method="POST" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-danger" 
-                                                    onclick="return confirm('Tem certeza que deseja deletar este Pokémon?')">
-                                                🗑️
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <th>Número</th>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>Ações</th>
                                 </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
-                <% } else { %>
-                    <div class="p-3 text-center text-muted">
-                        Nenhum Pokémon cadastrado.
-                    </div>
-                <% } %>
+                            </thead>
+                            <tbody>
+                                <% pokemons.forEach((p) => { %>
+                                    <tr>
+                                        <td><strong><%= p.numero %></strong></td>
+                                        <td><%= p.nome %></td>
+                                        <td>
+                                            <span class="type-badge">
+                                                <%= p.tipo1 %><% if (p.tipo2) { %>/<%= p.tipo2 %><% } %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <!-- BOTÃO VER DETALHES -->
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="showDetails(`<%= JSON.stringify(p) %>`)"">
+                                                    👁️ Detalhes
+                                                </button>
+                                                
+                                                <!-- BOTÃO EDITAR -->
+                                                <button class="btn btn-sm btn-outline-warning" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalEditar"
+                                                        data-id="<%= p.id %>"
+                                                        data-numero="<%= p.numero %>"
+                                                        data-nome="<%= p.nome %>"
+                                                        data-tipo1="<%= p.tipo1 %>"
+                                                        data-tipo2="<%= p.tipo2 %>"
+                                                        data-descricao="<%= p.descricao %>">
+                                                    ✏️ Editar
+                                                </button>
+                                                
+                                                <!-- BOTÃO DELETAR -->
+                                                <form action="/pokemons/deletar/<%= p.id %>" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                            onclick="return confirm('Tem certeza que deseja deletar <%= p.nome %>?')">
+                                                        🗑️ Excluir
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <div class="p-4 text-center text-muted">
+                            <p class="mb-0">Nenhum Pokémon cadastrado.</p>
+                        </div>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PARA ADICIONAR POKÉMON -->
+    <!-- MODAL DETALHES -->
+    <div class="modal fade" id="modalDetalhes" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesNome">Detalhes do Pokémon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Número:</strong>
+                        </div>
+                        <div class="col-6" id="detalhesNumero">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <strong>Tipo:</strong>
+                        </div>
+                        <div class="col-6" id="detalhesTipo">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <strong>Descrição:</strong>
+                            <p id="detalhesDescricao" class="mt-1 text-muted"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADICIONAR -->
     <div class="modal fade" id="modalPokemon" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -119,6 +237,10 @@
                                 <% }); %>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrição</label>
+                            <textarea class="form-control" name="descricao" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -129,7 +251,7 @@
         </div>
     </div>
 
-    <!-- MODAL PARA EDITAR POKÉMON -->
+    <!-- MODAL EDITAR -->
     <div class="modal fade" id="modalEditar" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -165,6 +287,10 @@
                                 <% }); %>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrição</label>
+                            <textarea class="form-control" name="descricao" id="editarDescricao" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -178,29 +304,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Preencher modal de edição com dados do Pokémon
+        // Função para mostrar detalhes
+        function showDetails(pokemon) {
+            document.getElementById('detalhesNome').textContent = pokemon.nome;
+            document.getElementById('detalhesNumero').textContent = pokemon.numero;
+            
+            const tipoCompleto = pokemon.tipo2 ? `${pokemon.tipo1}/${pokemon.tipo2}` : pokemon.tipo1;
+            document.getElementById('detalhesTipo').textContent = tipoCompleto;
+            
+            const descricao = pokemon.descricao || 'Nenhuma descrição disponível.';
+            document.getElementById('detalhesDescricao').textContent = descricao;
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+            modal.show();
+        }
+
+        // Preencher modal de edição
         document.addEventListener('DOMContentLoaded', function() {
             const modalEditar = document.getElementById('modalEditar');
             
             modalEditar.addEventListener('show.bs.modal', function(event) {
                 const button = event.relatedTarget;
                 
-                // Pegar dados do botão
                 const id = button.getAttribute('data-id');
                 const numero = button.getAttribute('data-numero');
                 const nome = button.getAttribute('data-nome');
                 const tipo1 = button.getAttribute('data-tipo1');
                 const tipo2 = button.getAttribute('data-tipo2');
+                const descricao = button.getAttribute('data-descricao');
                 
-                // Atualizar action do form
                 document.getElementById('formEditar').action = `/pokemons/editar/${id}`;
-                
-                // Preencher campos
                 document.getElementById('editarId').value = id;
                 document.getElementById('editarNumero').value = numero;
                 document.getElementById('editarNome').value = nome;
                 document.getElementById('editarTipo1').value = tipo1;
                 document.getElementById('editarTipo2').value = tipo2 || '';
+                document.getElementById('editarDescricao').value = descricao || '';
             });
         });
     </script>

@@ -3,116 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= titulo || "Pokémon App" %></title>
+    <title><%= titulo %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .trainer-image {
-            width: 70px !important;       
-            height: 70px !important;      
-            object-fit: cover;            
-            object-position: 50% 20%;     
-            border-radius: 50%;           
-            border: 2px solid #3b4cca;    
-            display: block;
-            margin: 0 auto;
-            background-color: #f8f9fa;    
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); 
-        }
-
-        .portrait-cell {
-            vertical-align: middle;
-            text-align: center;
-            width: 100px; 
-        }
-
-
-        .pokemon-icon {
-            width: 40px; 
-            height: 40px;
-            margin-right: 5px;
-            object-fit: contain;
-        }
-
-        .pokemon-team-cell {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start; 
-            flex-wrap: wrap;
-            gap: 5px; 
-        }
-    </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Lista de Treinadores Pokémon</h1>
-        <p class="text-center mb-5">Lista de Treinadores e suas equipes.</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gerenciar Treinadores Pokémon</h1>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTreinador">
+                ➕ Adicionar Treinador
+            </button>
+        </div>
 
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- LISTA DE TREINADORES -->
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white">
-                Treinadores Registrados
+                Treinadores Cadastrados
             </div>
-
             <div class="card-body p-0">
                 <% if (treinadores && treinadores.length > 0) { %>
-                    <table class="table table-striped table-hover mb-0 align-middle">
+                    <table class="table table-striped table-hover mb-0">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col" class="text-center">Retrato</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">Cidade</th>
-                                <th scope="col">Equipe</th>
+                                <th>Nome</th>
+                                <th>Cidade</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% treinadores.forEach((t) => { %>
+                            <% treinadores.forEach((treinador) => { %>
                                 <tr>
-                                    <td class="portrait-cell"> 
-                                        <img 
-                                            src="/imgs/<%= t.imagem %>" 
-                                            alt="Retrato de <%= t.nome %>" 
-                                            class="trainer-image"
-                                        >
-                                    </td>
-                                    <td><%= t.nome %></td>
-                                    <td><%= t.cidade %></td>
+                                    <td><strong><%= treinador.nome %></strong></td>
+                                    <td><%= treinador.cidade %></td>
                                     <td>
-                                        <div class="pokemon-team-cell">
-                                            <% t.equipe.forEach((pokemonNome) => { %>
-                                                <% 
-                                                    const imageName = pokemonNome
-                                                        .toLowerCase()
-                                                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                                                        .replace(/[^a-z0-9]/g, '') + '.png';
-                                                %>
-                                                <img 
-                                                    src="/imgs/pokemons/<%= imageName %>" 
-                                                    alt="<%= pokemonNome %>" 
-                                                    title="<%= pokemonNome %>" 
-                                                    class="pokemon-icon" 
-                                                >
-                                            <% }); %>
-                                        </div>
+                                        <!-- BOTÃO EDITAR -->
+                                        <button class="btn btn-sm btn-warning me-1" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#modalEditarTreinador"
+                                                data-id="<%= treinador.id %>"
+                                                data-nome="<%= treinador.nome %>"
+                                                data-cidade="<%= treinador.cidade %>">
+                                            ✏️
+                                        </button>
+                                        
+                                        <!-- BOTÃO DELETAR -->
+                                        <form action="/treinadores/deletar/<%= treinador.id %>" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" 
+                                                    onclick="return confirm('Tem certeza que deseja deletar este treinador?')">
+                                                🗑️
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             <% }); %>
                         </tbody>
                     </table>
                 <% } else { %>
-                    <div class="card-body text-center text-muted py-5">
-                        Nenhum treinador encontrado no catálogo.
+                    <div class="p-3 text-center text-muted">
+                        Nenhum treinador cadastrado.
                     </div>
                 <% } %>
             </div>
         </div>
+    </div>
 
-        <p class="text-center mt-4">
-            <a href="/" class="btn btn-outline-primary">Voltar para a Home</a>
-        </p>
+    <!-- MODAL PARA ADICIONAR TREINADOR -->
+    <div class="modal fade" id="modalTreinador" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Treinador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/treinadores" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nome do Treinador</label>
+                            <input type="text" class="form-control" name="nome" placeholder="Ex: Ash Ketchum" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" class="form-control" name="cidade" placeholder="Ex: Pallet" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA EDITAR TREINADOR -->
+    <div class="modal fade" id="modalEditarTreinador" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Treinador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/treinadores/editar/" method="POST" id="formEditarTreinador">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="editarTreinadorId">
+                        <div class="mb-3">
+                            <label class="form-label">Nome do Treinador</label>
+                            <input type="text" class="form-control" name="nome" id="editarTreinadorNome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" class="form-control" name="cidade" id="editarTreinadorCidade" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Atualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Preencher modal de edição com dados do Treinador
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalEditarTreinador = document.getElementById('modalEditarTreinador');
+            
+            modalEditarTreinador.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                
+                // Pegar dados do botão
+                const id = button.getAttribute('data-id');
+                const nome = button.getAttribute('data-nome');
+                const cidade = button.getAttribute('data-cidade');
+                
+                // Atualizar action do form
+                document.getElementById('formEditarTreinador').action = `/treinadores/editar/${id}`;
+                
+                // Preencher campos
+                document.getElementById('editarTreinadorId').value = id;
+                document.getElementById('editarTreinadorNome').value = nome;
+                document.getElementById('editarTreinadorCidade').value = cidade;
+            });
+        });
+    </script>
 </body>
 </html>

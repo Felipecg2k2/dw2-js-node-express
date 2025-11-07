@@ -42,10 +42,6 @@ const Pokemon = sequelize.define('Pokemon', {
         type: DataTypes.FLOAT,
         allowNull: true
     },
-    categoria: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     habilidade: {
         type: DataTypes.STRING,
         allowNull: true
