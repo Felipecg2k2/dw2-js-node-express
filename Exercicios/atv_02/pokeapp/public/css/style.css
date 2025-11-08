@@ -1,18 +1,48 @@
+/* styles.css - ATUALIZADO */
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
 }
 
-nav {
-  margin: 20px;
+/* Mantenha os estilos customizados do Pokémons */
+.custom-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: none;
 }
 
-table {
-  margin: 20px auto;
-  border-collapse: collapse;
+.btn-group-spaced {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-th, td {
-  padding: 10px;
+.detail-row {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #555;
+    min-width: 120px;
+}
+
+.detail-value {
+    color: #333;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
