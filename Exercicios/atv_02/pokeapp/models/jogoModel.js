@@ -14,8 +14,8 @@ const Jogo = sequelize.define('Jogo', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    imagens: {
-        type: DataTypes.TEXT, // JSON string
+    imagem: {  
+        type: DataTypes.STRING, 
         allowNull: true
     }
 }, {

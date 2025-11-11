@@ -2,6 +2,7 @@ import express from "express"
 const router = express.Router()
 import Treinador from '../models/treinadorModel.js';
 import Pokemon from '../models/pokemonModel.js';
+import { uploadSingle } from '../middleware/multer-config.js';
 
 // ========== READ - LISTAR TREINADORES ==========
 router.get("/", async (req, res) => {
@@ -16,7 +17,6 @@ router.get("/", async (req, res) => {
         const treinadoresFormatados = treinadores.map(treinador => {
             let equipe = treinador.equipe;
             
-            // Se equipe é string, tentar converter para array
             if (typeof equipe === 'string') {
                 try {
                     equipe = JSON.parse(equipe);
@@ -25,7 +25,6 @@ router.get("/", async (req, res) => {
                 }
             }
             
-            // Garantir que equipe é um array
             if (!Array.isArray(equipe)) {
                 equipe = [];
             }
@@ -51,15 +50,14 @@ router.get("/", async (req, res) => {
     }
 });
 
-// ========== CREATE - SALVAR NOVO TREINADOR ==========
-router.post("/", async (req, res) => {
+// ========== CREATE - SALVAR NOVO TREINADOR COM IMAGEM ==========
+router.post("/", uploadSingle('imagem'), async (req, res) => {
     try {
         const { nome, cidade, equipe } = req.body;
         
         console.log('=== CRIANDO TREINADOR ===');
         console.log('Equipe recebida:', equipe);
         
-        // CORREÇÃO: Usar a mesma lógica do UPDATE
         let equipeArray = [];
         
         if (equipe) {
@@ -76,11 +74,18 @@ router.post("/", async (req, res) => {
         
         console.log('Equipe processada:', equipeArray);
         
-        await Treinador.create({ 
+        const treinadorData = { 
             nome, 
             cidade,
             equipe: equipeArray
-        });
+        };
+
+        // Se há arquivo de imagem, adicionar caminho aos dados
+        if (req.file) {
+            treinadorData.imagem = '/uploads/treinadores/' + req.file.filename;
+        }
+        
+        await Treinador.create(treinadorData);
         
         res.redirect('/treinadores');
     } catch (error) {
@@ -97,8 +102,8 @@ router.post("/", async (req, res) => {
     }
 });
 
-// ========== UPDATE - ATUALIZAR TREINADOR ==========
-router.post("/editar/:id", async (req, res) => {
+// ========== UPDATE - ATUALIZAR TREINADOR COM IMAGEM ==========
+router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
     try {
         const { nome, cidade, equipe } = req.body;
         const treinador = await Treinador.findByPk(req.params.id);
@@ -108,31 +113,36 @@ router.post("/editar/:id", async (req, res) => {
         console.log('Nome:', nome);
         console.log('Cidade:', cidade);
         console.log('Equipe recebida:', equipe);
-        console.log('Tipo da equipe:', typeof equipe);
         
         if (treinador) {
-            // CORREÇÃO: Processar equipe corretamente
             let equipeArray = [];
             
             if (equipe) {
                 if (typeof equipe === 'string' && equipe.trim() !== '') {
-                    // Se for string com vírgulas, separar
                     if (equipe.includes(',')) {
                         equipeArray = equipe.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
                     } else {
-                        // Se for string única, criar array com um elemento
                         equipeArray = [parseInt(equipe.trim())].filter(id => !isNaN(id));
                     }
                 } else if (Array.isArray(equipe)) {
-                    // Se já for array, usar diretamente
                     equipeArray = equipe.map(id => parseInt(id)).filter(id => !isNaN(id));
                 }
             }
             
             console.log('Equipe processada:', equipeArray);
-            console.log('Tipo da equipe processada:', Array.isArray(equipeArray) ? 'Array' : typeof equipeArray);
             
-            await treinador.update({ nome, cidade, equipe: equipeArray });
+            const updateData = { 
+                nome, 
+                cidade, 
+                equipe: equipeArray 
+            };
+
+            // Se há nova imagem, atualizar caminho
+            if (req.file) {
+                updateData.imagem = '/uploads/treinadores/' + req.file.filename;
+            }
+            
+            await treinador.update(updateData);
             
             // Verificar se foi salvo corretamente
             const treinadorAtualizado = await Treinador.findByPk(req.params.id);

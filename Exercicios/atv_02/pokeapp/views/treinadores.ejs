@@ -36,6 +36,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-top: 0.5rem;
+            align-items: center;
         }
         
         .pokemon-equipe-badge {
@@ -113,6 +114,141 @@
         .cursor-pointer {
             cursor: pointer;
         }
+
+        /* NOVOS ESTILOS PARA IMAGENS */
+        .treinador-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #dee2e6;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .current-image {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #28a745;
+        }
+        
+        .no-image {
+            width: 60px;
+            height: 60px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .detail-row {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+            min-width: 120px;
+        }
+        
+        .detail-value {
+            color: #333;
+        }
+
+        /* ESTILOS PARA A EQUIPE COM IMAGENS DOS POKÉMONS */
+        .pokemon-equipe-imagem {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pokemon-equipe-imagem:hover {
+            transform: scale(1.1);
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .pokemon-equipe-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .pokemon-equipe-sem-imagem {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .pokemon-equipe-vazio {
+            width: 50px;
+            height: 50px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .slot-vazio-small {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        /* Tooltip personalizado */
+        .pokemon-equipe-imagem:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+
+        .type-badges-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -146,6 +282,7 @@
                         <table class="table table-striped table-hover mb-0">
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>Imagem</th>
                                     <th>Nome</th>
                                     <th>Cidade</th>
                                     <th>Equipe Pokémon</th>
@@ -155,6 +292,14 @@
                             <tbody>
                                 <% treinadores.forEach((treinador) => { %>
                                     <tr>
+                                        <td>
+                                            <% if (treinador.imagem) { %>
+                                                <img src="<%= treinador.imagem %>" alt="<%= treinador.nome %>" class="treinador-image" 
+                                                     onclick="ampliarImagem('<%= treinador.imagem %>', '<%= treinador.nome %>')" style="cursor: pointer;">
+                                            <% } else { %>
+                                                <div class="no-image">Sem imagem</div>
+                                            <% } %>
+                                        </td>
                                         <td><strong><%= treinador.nome %></strong></td>
                                         <td>
                                             <span class="type-badge">
@@ -189,30 +334,46 @@
                                                 
                                                 <% if (equipeCompleta.length > 0) { %>
                                                     <% equipeCompleta.forEach((pokemon) => { %>
-                                                        <span class="type-badge pokemon-equipe-badge"
-                                                              onclick=`'showPokemonDetails(<%= JSON.stringify(pokemon).replace(/"/g, "&quot;") %>)'`>
-                                                            <%= pokemon.nome %>
-                                                        </span>
+                                                        <div class="pokemon-equipe-imagem" 
+                                                             onclick=`"showPokemonDetails('<%= pokemon.id %>', '<%= pokemon.nome %>', '<%= pokemon.numero %>', '<%= pokemon.tipo1 %>', '<%= pokemon.tipo2 || "" %>', '<%= pokemon.altura || "" %>', '<%= pokemon.peso || "" %>', '<%= pokemon.habilidade || "" %>', '<%= pokemon.descricao || "" %>', '<%= pokemon.imagem || "" %>')"`
+                                                             title="<%= pokemon.nome %> - <%= pokemon.tipo1 %><% if (pokemon.tipo2) { %>/<%= pokemon.tipo2 %><% } %>">
+                                                            <% if (pokemon.imagem) { %>
+                                                                <img src="<%= pokemon.imagem %>" alt="<%= pokemon.nome %>" class="pokemon-equipe-thumb">
+                                                            <% } else { %>
+                                                                <div class="pokemon-equipe-sem-imagem">
+                                                                    <%= pokemon.nome.charAt(0) %>
+                                                                </div>
+                                                            <% } %>
+                                                        </div>
                                                     <% }); %>
                                                     
                                                     <% if (equipeCompleta.length < 6) { %>
-                                                        <span class="badge bg-secondary"><%= 6 - equipeCompleta.length %> vazio(s)</span>
+                                                        <% for (let i = 0; i < (6 - equipeCompleta.length); i++) { %>
+                                                            <div class="pokemon-equipe-vazio" title="Slot vazio">
+                                                                <div class="slot-vazio-small">+</div>
+                                                            </div>
+                                                        <% } %>
                                                     <% } %>
                                                 <% } else { %>
-                                                    <span class="equipe-vazia">6 slots vazios</span>
+                                                    <% for (let i = 0; i < 6; i++) { %>
+                                                        <div class="pokemon-equipe-vazio" title="Slot vazio">
+                                                            <div class="slot-vazio-small">+</div>
+                                                        </div>
+                                                    <% } %>
                                                 <% } %>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="btn-group-spaced">
-                                                <!-- BOTÃO EDITAR - ATUALIZADO -->
+                                                <!-- BOTÃO EDITAR - ATUALIZADO COM IMAGEM -->
                                                 <button class="btn btn-sm btn-outline-warning" 
                                                         data-bs-toggle="modal" 
                                                         data-bs-target="#modalEditarTreinador"
                                                         data-id="<%= treinador.id %>"
                                                         data-nome="<%= treinador.nome %>"
                                                         data-cidade="<%= treinador.cidade %>"
-                                                        data-equipe='<%= JSON.stringify(treinador.equipe || []) %>'>
+                                                        data-equipe='<%= JSON.stringify(treinador.equipe || []) %>'
+                                                        data-imagem="<%= treinador.imagem || '' %>">
                                                     ✏️ Editar
                                                 </button>
                                                 
@@ -247,7 +408,7 @@
                     <h5 class="modal-title">Adicionar Treinador</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/treinadores" method="POST" id="formTreinador">
+                <form action="/treinadores" method="POST" id="formTreinador" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -258,6 +419,12 @@
                                 <div class="mb-3">
                                     <label class="form-label">Cidade *</label>
                                     <input type="text" class="form-control" name="cidade" placeholder="Ex: Pallet" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Imagem do Treinador</label>
+                                    <input type="file" class="form-control" name="imagem" id="imagemInputTreinador" accept="image/*" onchange="previewImage(this, 'previewImagemTreinador')">
+                                    <small class="text-muted">Formatos: JPG, PNG, GIF. Máx: 5MB</small>
+                                    <img id="previewImagemTreinador" class="image-preview" alt="Preview da imagem">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -290,7 +457,7 @@
                     <h5 class="modal-title">Editar Treinador</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/treinadores/editar/" method="POST" id="formEditarTreinador">
+                <form action="/treinadores/editar/" method="POST" id="formEditarTreinador" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" name="id" id="editarTreinadorId">
                         <div class="row">
@@ -302,6 +469,21 @@
                                 <div class="mb-3">
                                     <label class="form-label">Cidade *</label>
                                     <input type="text" class="form-control" name="cidade" id="editarTreinadorCidade" required>
+                                </div>
+                                <!-- NOVO CAMPO: IMAGEM DO TREINADOR NO EDIT -->
+                                <div class="mb-3">
+                                    <label class="form-label">Imagem do Treinador</label>
+                                    
+                                    <!-- Imagem atual -->
+                                    <div id="currentImageContainerTreinador" class="mb-2">
+                                        <small class="text-muted">Imagem atual:</small>
+                                        <div id="currentImageTreinador" class="mt-1"></div>
+                                    </div>
+                                    
+                                    <!-- Upload nova imagem -->
+                                    <input type="file" class="form-control" name="imagem" id="editarImagemInputTreinador" accept="image/*" onchange="previewImage(this, 'previewEditarImagemTreinador')">
+                                    <small class="text-muted">Deixe em branco para manter a imagem atual</small>
+                                    <img id="previewEditarImagemTreinador" class="image-preview" alt="Preview da nova imagem">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -375,14 +557,17 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4 text-center">
+                            <!-- IMAGEM GRANDE DO POKÉMON -->
+                            <div id="detalhesPokemonImagemContainer" class="mb-3">
+                                <img id="detalhesPokemonImagem" src="" alt="" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;">
+                            </div>
+                            <div class="type-badges-container" id="detalhesPokemonTipos"></div>
+                        </div>
+                        <div class="col-md-8">
                             <div class="detail-row">
                                 <span class="detail-label">Número:</span>
                                 <span class="detail-value" id="detalhesPokemonNumero"></span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Tipo:</span>
-                                <span class="detail-value" id="detalhesPokemonTipo"></span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Altura:</span>
@@ -392,8 +577,6 @@
                                 <span class="detail-label">Peso:</span>
                                 <span class="detail-value" id="detalhesPokemonPeso"></span>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="detail-row">
                                 <span class="detail-label">Habilidade:</span>
                                 <span class="detail-value" id="detalhesPokemonHabilidade"></span>
@@ -416,19 +599,32 @@
         </div>
     </div>
 
+    <!-- MODAL PARA AMPLIAR IMAGEM -->
+    <div class="modal fade" id="modalAmpliarImagem" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloImagemAmpliada"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="imagemAmpliada" src="" alt="" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
 <script>
     // Variáveis globais
     let slotAtual = null;
     
-    // CORREÇÃO: pokemonsData deve ser um array JavaScript, não string
-    // REMOVA as aspas extras que estavam tornando string
+    // CORREÇÃO: pokemonsData deve ser um array JavaScript - REMOVIDAS AS ASPAS
     const pokemonsData = `<%- JSON.stringify(pokemons) %>`;
     
     console.log('Pokémons carregados:', pokemonsData);
     console.log('Tipo:', Array.isArray(pokemonsData) ? 'Array' : typeof pokemonsData);
-    console.log('Primeiro Pokémon:', pokemonsData[0]);
 
     // Função para testar envio do formulário
     function testarEnvioFormulario() {
@@ -445,29 +641,100 @@
         alert('Verifique o console (F12) para ver os dados de teste');
     }
 
-    // Função para mostrar detalhes do Pokémon
-    function showPokemonDetails(pokemon) {
-        document.getElementById('detalhesPokemonNome').textContent = pokemon.nome || 'Não informado';
-        document.getElementById('detalhesPokemonNumero').textContent = pokemon.numero || 'N/A';
+    // Função para mostrar detalhes do Pokémon - VERSÃO CORRIGIDA
+    function showPokemonDetails(id, nome, numero, tipo1, tipo2, altura, peso, habilidade, descricao, imagem) {
+        console.log('Detalhes do Pokémon:', { id, nome, numero, tipo1, tipo2, altura, peso, habilidade, descricao, imagem });
+        
+        document.getElementById('detalhesPokemonNome').textContent = nome || 'Não informado';
+        document.getElementById('detalhesPokemonNumero').textContent = numero || 'N/A';
 
-        const tipoComplete = pokemon.tipo2 ? 
-            `${pokemon.tipo1}/${pokemon.tipo2}` : 
-            pokemon.tipo1 || 'Não informado';
-        document.getElementById('detalhesPokemonTipo').textContent = tipoComplete;
+        // Mostrar tipos com badges coloridos
+        const tiposContainer = document.getElementById('detalhesPokemonTipos');
+        if (tipo1) {
+            let tiposHTML = `<span class="type-badge" style="background: ${getTipoColor(tipo1)}">${tipo1}</span>`;
+            if (tipo2 && tipo2.trim() !== '') {
+                tiposHTML += ` <span class="type-badge" style="background: ${getTipoColor(tipo2)}">${tipo2}</span>`;
+            }
+            tiposContainer.innerHTML = tiposHTML;
+        } else {
+            tiposContainer.innerHTML = '<span class="text-muted">Não informado</span>';
+        }
 
-        const altura = pokemon.altura ? `${pokemon.altura} m` : 'Não informada';
-        document.getElementById('detalhesPokemonAltura').textContent = altura;
+        const alturaText = altura && altura.trim() !== '' ? `${altura} m` : 'Não informada';
+        document.getElementById('detalhesPokemonAltura').textContent = alturaText;
 
-        const peso = pokemon.peso ? `${pokemon.peso} kg` : 'Não informado';
-        document.getElementById('detalhesPokemonPeso').textContent = peso;
+        const pesoText = peso && peso.trim() !== '' ? `${peso} kg` : 'Não informado';
+        document.getElementById('detalhesPokemonPeso').textContent = pesoText;
 
-        const habilidade = pokemon.habilidade || 'Não informada';
-        document.getElementById('detalhesPokemonHabilidade').textContent = habilidade;
+        const habilidadeText = habilidade && habilidade.trim() !== '' ? habilidade : 'Não informada';
+        document.getElementById('detalhesPokemonHabilidade').textContent = habilidadeText;
 
-        const descricao = pokemon.descricao || 'Nenhuma descrição disponível.';
-        document.getElementById('detalhesPokemonDescricao').textContent = descricao;
+        const descricaoText = descricao && descricao.trim() !== '' ? descricao : 'Nenhuma descrição disponível.';
+        document.getElementById('detalhesPokemonDescricao').textContent = descricaoText;
+
+        // Mostrar imagem grande nos detalhes
+        const imagemElement = document.getElementById('detalhesPokemonImagem');
+        if (imagem && imagem.trim() !== '') {
+            imagemElement.src = imagem;
+            imagemElement.alt = nome;
+            imagemElement.style.display = 'block';
+        } else {
+            imagemElement.style.display = 'none';
+        }
 
         const modal = new bootstrap.Modal(document.getElementById('modalDetalhesPokemon'));
+        modal.show();
+    }
+
+    // Função para obter cores dos tipos Pokémon
+    function getTipoColor(tipo) {
+        const cores = {
+            'Normal': '#A8A878',
+            'Fogo': '#F08030',
+            'Água': '#6890F0',
+            'Elétrico': '#F8D030',
+            'Grama': '#78C850',
+            'Gelo': '#98D8D8',
+            'Lutador': '#C03028',
+            'Veneno': '#A040A0',
+            'Terra': '#E0C068',
+            'Voador': '#A890F0',
+            'Psíquico': '#F85888',
+            'Inseto': '#A8B820',
+            'Pedra': '#B8A038',
+            'Fantasma': '#705898',
+            'Dragão': '#7038F8',
+            'Sombrio': '#705848',
+            'Aço': '#B8B8D0',
+            'Fada': '#EE99AC'
+        };
+        return cores[tipo] || '#68A090';
+    }
+
+    // Função para preview de imagem
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    // Função para ampliar imagem
+    function ampliarImagem(src, nome) {
+        document.getElementById('imagemAmpliada').src = src;
+        document.getElementById('tituloImagemAmpliada').textContent = nome;
+        const modal = new bootstrap.Modal(document.getElementById('modalAmpliarImagem'));
         modal.show();
     }
 
@@ -652,6 +919,10 @@
                 if (debugElement) {
                     debugElement.textContent = 'Nenhum Pokémon';
                 }
+
+                // Limpar preview de imagem
+                document.getElementById('previewImagemTreinador').style.display = 'none';
+                document.getElementById('imagemInputTreinador').value = '';
             });
         }
 
@@ -668,8 +939,9 @@
                 const nome = button.getAttribute('data-nome');
                 const cidade = button.getAttribute('data-cidade');
                 const equipeString = button.getAttribute('data-equipe');
+                const imagem = button.getAttribute('data-imagem');
                 
-                console.log('Dados do treinador:', { id, nome, cidade, equipeString });
+                console.log('Dados do treinador:', { id, nome, cidade, equipeString, imagem });
                 
                 // Processar equipe - CORREÇÃO: Tratar string vazia e arrays
                 let equipeArray = [];
@@ -695,6 +967,14 @@
                 
                 // IMPORTANTE: Definir o input hidden ANTES de preencher os slots
                 document.getElementById('equipeInputEditar').value = equipeArray.join(',');
+
+                // Mostrar imagem atual no edit
+                const currentImageContainer = document.getElementById('currentImageTreinador');
+                if (imagem) {
+                    currentImageContainer.innerHTML = `<img src="${imagem}" alt="${nome}" class="current-image">`;
+                } else {
+                    currentImageContainer.innerHTML = '<span class="text-muted">Nenhuma imagem</span>';
+                }
 
                 // Preencher slots da equipe
                 const container = document.getElementById('equipeSlotsEditar');
@@ -753,6 +1033,10 @@
                 if (debugElement) {
                     debugElement.textContent = equipeArray.length > 0 ? equipeArray.join(', ') : 'Nenhum Pokémon';
                 }
+                
+                // Limpar preview de nova imagem
+                document.getElementById('previewEditarImagemTreinador').style.display = 'none';
+                document.getElementById('editarImagemInputTreinador').value = '';
                 
                 console.log('Modal edição configurado. Slots preenchidos:', slotsPreenchidos);
                 console.log('Input hidden value:', document.getElementById('equipeInputEditar').value);
