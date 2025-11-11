@@ -36,20 +36,20 @@ router.get("/", async (req, res) => {
 // ========== CREATE - SALVAR NOVO JOGO COM IMAGEM ==========
 router.post("/", uploadSingle('imagem'), async (req, res) => {
     try {
-        const { nome, console, ano } = req.body;
+        const { nome, console: consoleName, ano } = req.body; // ← CORREÇÃO AQUI: renomeei 'console' para 'consoleName'
         
-        console.log('📥 Dados recebidos:', { nome, console, ano });
+        console.log('📥 Dados recebidos:', { nome, console: consoleName, ano });
         console.log('📁 Arquivo recebido:', req.file);
 
         const jogoData = { 
             nome, 
-            console, 
+            console: consoleName, // ← CORREÇÃO AQUI: use o nome correto
             ano 
         };
 
         // Se há arquivo de imagem, adicionar APENAS O NOME DO ARQUIVO ao banco
         if (req.file) {
-            jogoData.imagem = req.file.filename; // ← CORREÇÃO: Salva apenas o nome do arquivo
+            jogoData.imagem = req.file.filename;
             console.log('🖼️ Nome da imagem salva no banco:', jogoData.imagem);
         }
         
@@ -73,7 +73,7 @@ router.post("/", uploadSingle('imagem'), async (req, res) => {
 router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { nome, console, ano } = req.body;
+        const { nome, console: consoleName, ano } = req.body; // ← CORREÇÃO AQUI também
         
         console.log('📥 Atualizando jogo ID:', id);
         console.log('📁 Novo arquivo:', req.file);
@@ -86,7 +86,7 @@ router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
 
         const updateData = { 
             nome, 
-            console, 
+            console: consoleName, // ← CORREÇÃO AQUI também
             ano 
         };
 
@@ -101,7 +101,7 @@ router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
                 }
             }
             
-            updateData.imagem = req.file.filename; // ← CORREÇÃO: Salva apenas o nome do arquivo
+            updateData.imagem = req.file.filename;
             console.log('🖼️ Nova imagem salva no banco:', updateData.imagem);
         }
         
@@ -153,6 +153,8 @@ router.get("/debug", async (req, res) => {
         const debugInfo = jogos.map(jogo => ({
             id: jogo.id,
             nome: jogo.nome,
+            console: jogo.console,
+            ano: jogo.ano,
             imagem_no_banco: jogo.imagem,
             caminho_completo: jogo.imagem ? `/uploads/jogos/${jogo.imagem}` : null,
             imagem_existe: jogo.imagem ? fs.existsSync(path.join(__dirname, '../public/uploads/jogos', jogo.imagem)) : false

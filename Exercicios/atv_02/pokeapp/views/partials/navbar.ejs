@@ -24,25 +24,36 @@
                 </li>
             </ul>
             
-<ul class="navbar-nav">
-    <!-- ✅ JÁ ESTÁ CORRETO -->
-    <% if (typeof user !== 'undefined' && user) { %>
-        <li class="nav-item">
-            <span class="navbar-text me-3">
-                Olá, <%= user.nome %>
-            </span>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/user/logout">
-                🚪 Sair
-            </a>
-        </li>
-    <% } else { %>
-        <li class="nav-item">
-            <a class="nav-link" href="/user/login">🔐 Entrar</a>
-        </li>
-    <% } %>
-</ul>
+            <ul class="navbar-nav ms-auto">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">👤</span>
+                            <span><%= user.nome %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <small>Logado como</small><br>
+                                    <strong><%= user.nome %></strong>
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="/user/logout">
+                                    🚪 Sair
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/login">
+                            🔐 Entrar
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
         </div>
     </div>
 </nav>
