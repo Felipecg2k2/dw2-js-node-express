@@ -6,58 +6,55 @@
     <title><%= titulo %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .login-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #ffcb05 0%, #2a75bb 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        body {
+            background: #f0f0f0;
+            font-family: system-ui, sans-serif;
         }
-        .login-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: #2a75bb;
+            border: none;
         }
     </style>
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-card p-4">
-            <h2 class="text-center mb-4">Criar Conta</h2>
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card p-4 w-100" style="max-width: 400px;">
+        <h2 class="text-center mb-4">Criar Conta</h2>
 
-            <% if (error) { %>
-                <div class="alert alert-danger">
-                    <%= error %>
-                </div>
-            <% } %>
+        <% if (error) { %>
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        <% } %>
 
-            <form action="/user/registro" method="POST">
-                <div class="mb-3">
-                    <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" name="nome" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" required>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label">Senha</label>
-                    <input type="password" class="form-control" name="senha" required>
-                </div>
+        <form action="/user/registro" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" name="nome" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-control" name="senha" required>
+            </div>
 
-                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
-                    📝 Criar Conta
-                </button>
-                
-                <div class="text-center mt-3">
-                    <a href="/user/login">Já tem conta? Faça login</a>
-                </div>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+                Criar Conta
+            </button>
+            
+            <div class="text-center mt-3">
+                <a href="/user/login">Já tem conta? Faça login</a>
+            </div>
+        </form>
     </div>
 </body>
 </html>

@@ -158,9 +158,8 @@
                                                 <div class="image-container">
                                                     <!-- CORREÇÃO AQUI: caminho correto para uploads/jogos/ -->
                                                     <img src="/uploads/jogos/<%= jogo.imagem %>" alt="<%= jogo.nome %>" class="jogo-image">
-                                                    <div class="image-overlay">
-                                                        Clique para ampliar
-                                                    </div>
+                                                    <div class="image-overlay" onclick="ampliarImagem('/uploads/jogos/<%= jogo.imagem %>', '<%= jogo.nome %>')">
+                                                        Ampliar Imagem
                                                 </div>
                                             <% } else { %>
                                                 <div class="no-image">Sem imagem</div>
