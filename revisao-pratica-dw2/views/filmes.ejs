@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Movies</title>
+  </head>
+  <body>
+    <h1 style="text-align: center">The Movies</h1>
+    <hr />
+
+    <!-- Formulário de cadastro -->
+    <div class="container">
+      <h1>Cadastrar novo filme:</h1>
+      <form action="/filmes/new" method="post">
+        <label>Título:</label>
+        <input type="text" name="titulo" />
+        <label>Gênero:</label>
+        <input type="text" name="genero" />
+        <label>Duração:</label>
+        <input type="number" name="duracao" />
+        <input type="submit" value="Cadastrar" />
+      </form>
+      <br />
+      <hr />
+      <br />
+    </div>
+
+    <table>
+      <thead>
+        <th style="width: 150px; text-align: left">Titulo:</th>
+        <th style="width: 150px; text-align: left">Gênero:</th>
+        <th style="width: 150px; text-align: left">Duração:</th>
+        <th style="width: 150px; text-align: left">Ações:</th>
+      </thead>
+      <tbody>
+        <% filmes.forEach(filme => { %>
+        <tr>
+          <td><%= filme.titulo %></td>
+          <td><%= filme.genero %></td>
+          <td><%= filme.duracao %></td>
+
+          <td>
+            <a href="/filmes/delete/<%= filme.id %>">
+              <button onclick="return confirm(`Deseja mesmo excluir o filme <%= filme.titulo%>?`)">Excluir</button>
+            </a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <footer style="text-align: center">
+      <hr />
+      The Movies &copy; 2025
+    </footer>
+  </body>
+</html>
