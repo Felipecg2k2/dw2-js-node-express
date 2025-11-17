@@ -219,9 +219,9 @@ function ampliarImagem(src, nome) {
     modal.show();
 }
 
-// Inicialização - CORRIGIDA E SIMPLIFICADA
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inicializando sistema de treinadores...');
+    console.log('=== INICIALIZANDO SISTEMA DE TREINADORES ===');
     
     // Carregar dados dos Pokémon
     if (typeof window.pokemonsData !== 'undefined') {
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Dados dos Pokémon carregados:', pokemonsData.length);
     }
 
-    // Modal Editar - CORREÇÃO PRINCIPAL
+    // Modal Editar
     const modalEditar = document.getElementById('modalEditarTreinador');
     if (modalEditar) {
         modalEditar.addEventListener('show.bs.modal', function(event) {
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('Dados do treinador:', { id, nome, cidade, equipeString, imagem });
             
-            // Preencher formulário básico - COM VERIFICAÇÃO
+            // Preencher formulário básico
             const form = document.getElementById('formEditarTreinador');
             if (form) {
                 form.action = `/treinadores/editar/${id}`;

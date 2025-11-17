@@ -42,7 +42,7 @@ User.prototype.verificarSenha = function(senha) {
 };
 
 User.sync({ force: false })
-    .then(() => console.log('✅ Tabela User sincronizada'))
-    .catch(err => console.error('❌ Erro ao sincronizar User:', err));
+    .then(() => console.log(' Tabela User sincronizada'))
+    .catch(err => console.error(' Erro ao sincronizar User:', err));
 
 export default User;

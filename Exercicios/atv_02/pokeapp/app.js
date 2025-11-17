@@ -1,7 +1,5 @@
 import express from "express";
 import session from "express-session";
-
-// ✅ Conectar com MySQL
 import './config/sequelize-config.js';
 
 const app = express();
@@ -28,7 +26,7 @@ app.use(session({
     }
 }));
 
-// ✅ MIDDLEWARE - passar user para todas as views
+// MIDDLEWARE - passar user para todas as views
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
@@ -49,12 +47,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// ✅ ROTAS PROTEGIDAS
+// ROTAS PROTEGIDAS
 app.use('/pokemons', pokemonController); 
 app.use('/jogos', jogosController); 
 app.use('/treinadores', treinadoresController); 
 
-// ✅ ROTA PRINCIPAL - RENDERIZA INDEX
+//  ROTA PRINCIPAL - RENDERIZA INDEX
 app.get("/", (req, res) => {
     res.render('index', {
         titulo: "Dashboard - PokéApp"

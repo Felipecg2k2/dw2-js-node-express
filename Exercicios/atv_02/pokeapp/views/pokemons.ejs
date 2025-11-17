@@ -5,87 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= titulo %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .type-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background-color: #3498db;
-            color: white;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
-        .custom-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .btn-group-spaced {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .detail-row {
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .detail-label {
-            font-weight: bold;
-            color: #555;
-            min-width: 120px;
-        }
-        
-        .detail-value {
-            color: #333;
-        }
-
-        /* NOVOS ESTILOS PARA IMAGENS */
-        .pokemon-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-        }
-        
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-            display: none;
-            margin-top: 10px;
-        }
-        
-        .current-image {
-            max-width: 150px;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #28a745;
-        }
-        
-        .no-image {
-            width: 60px;
-            height: 60px;
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.8rem;
-        }
-    </style>
+    <link href="/css/pokemons.css" rel="stylesheet">
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -144,15 +64,12 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <!-- BOTÕES SEPARADOS COM ESPAÇAMENTO -->
                                             <div class="btn-group-spaced">
-                                                <!-- BOTÃO VER DETALHES COM DATA ATTRIBUTES -->
                                                 <button class="btn btn-sm btn-outline-primary btn-detalhes"
                                                         data-pokemon='<%= JSON.stringify(p) %>'>
                                                     👁️ Detalhes
                                                 </button>
                                                 
-                                                <!-- BOTÃO EDITAR - ATUALIZADO COM IMAGEM -->
                                                 <button class="btn btn-sm btn-outline-warning" 
                                                         data-bs-toggle="modal" 
                                                         data-bs-target="#modalEditar"
@@ -169,7 +86,6 @@
                                                     ✏️ Editar
                                                 </button>
                                                 
-                                                <!-- BOTÃO DELETAR -->
                                                 <form action="/pokemons/deletar/<%= p.id %>" method="POST" class="d-inline">
                                                     <button type="submit" class="btn btn-sm btn-outline-danger" 
                                                             onclick="return confirm('Tem certeza que deseja deletar <%= p.nome %>?')">
@@ -298,7 +214,6 @@
                                     <label class="form-label">Habilidade</label>
                                     <input type="text" class="form-control" name="habilidade" placeholder="Ex: Superar">
                                 </div>
-                                <!-- NOVO CAMPO: UPLOAD DE IMAGEM -->
                                 <div class="mb-3">
                                     <label class="form-label">Imagem do Pokémon</label>
                                     <input type="file" class="form-control" name="imagem" id="imagemInput" accept="image/*" onchange="previewImage(this, 'previewImagem')">
@@ -373,17 +288,12 @@
                                     <label class="form-label">Habilidade</label>
                                     <input type="text" class="form-control" name="habilidade" id="editarHabilidade">
                                 </div>
-                                <!-- NOVO CAMPO: UPLOAD DE IMAGEM NO EDIT -->
                                 <div class="mb-3">
                                     <label class="form-label">Imagem do Pokémon</label>
-                                    
-                                    <!-- Imagem atual -->
                                     <div id="currentImageContainer" class="mb-2">
                                         <small class="text-muted">Imagem atual:</small>
                                         <div id="currentImage" class="mt-1"></div>
                                     </div>
-                                    
-                                    <!-- Upload nova imagem -->
                                     <input type="file" class="form-control" name="imagem" id="editarImagemInput" accept="image/*" onchange="previewImage(this, 'previewEditarImagem')">
                                     <small class="text-muted">Deixe em branco para manter a imagem atual. Formatos: JPG, PNG, GIF. Máx: 5MB</small>
                                     <img id="previewEditarImagem" class="image-preview" alt="Preview da nova imagem">
@@ -420,141 +330,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Função para mostrar detalhes completos - ATUALIZADA COM IMAGEM
-        function showDetails(pokemon) {
-            console.log('Pokemon data:', pokemon);
-            
-            document.getElementById('detalhesNome').textContent = pokemon.nome || 'Não informado';
-            document.getElementById('detalhesNumero').textContent = pokemon.numero || 'N/A';
-
-            const tipoComplete = pokemon.tipo2 ? 
-                `${pokemon.tipo1}/${pokemon.tipo2}` : 
-                pokemon.tipo1 || 'Não informado';
-            document.getElementById('detalhesTipo').textContent = tipoComplete;
-
-            const altura = pokemon.altura ? `${pokemon.altura} m` : 'Não informada';
-            document.getElementById('detalhesAltura').textContent = altura;
-
-            const peso = pokemon.peso ? `${pokemon.peso} kg` : 'Não informado';
-            document.getElementById('detalhesPeso').textContent = peso;
-
-            const habilidade = pokemon.habilidade || 'Não informada';
-            document.getElementById('detalhesHabilidade').textContent = habilidade;
-
-            const descricao = pokemon.descricao || 'Nenhuma descrição disponível.';
-            document.getElementById('detalhesDescricao').textContent = descricao;
-
-            // Mostrar imagem nos detalhes
-            const imagemContainer = document.getElementById('detalhesImagemContainer');
-            if (pokemon.imagem) {
-                imagemContainer.innerHTML = `<img src="${pokemon.imagem}" alt="${pokemon.nome}" class="current-image">`;
-            } else {
-                imagemContainer.innerHTML = '<span class="text-muted">Nenhuma imagem</span>';
-            }
-
-            const modalElement = document.getElementById('modalDetalhes');
-            if (modalElement) {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }
-        }
-
-        // Função para preview de imagem
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            const file = input.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                
-                reader.readAsDataURL(file);
-            } else {
-                preview.style.display = 'none';
-            }
-        }
-
-        // Função para ampliar imagem
-        function ampliarImagem(src, nome) {
-            document.getElementById('imagemAmpliada').src = src;
-            document.getElementById('tituloImagemAmpliada').textContent = nome;
-            const modal = new bootstrap.Modal(document.getElementById('modalAmpliarImagem'));
-            modal.show();
-        }
-
-        // Event listener para botões de detalhes
-        document.addEventListener('DOMContentLoaded', function() {
-            // Botões de detalhes
-            document.querySelectorAll('.btn-detalhes').forEach(button => {
-                button.addEventListener('click', function() {
-                    try {
-                        const pokemonData = JSON.parse(this.getAttribute('data-pokemon'));
-                        showDetails(pokemonData);
-                    } catch (error) {
-                        console.error('Erro ao parsear dados do Pokémon:', error);
-                        alert('Erro ao carregar detalhes do Pokémon');
-                    }
-                });
-            });
-            
-            // Modal de edição - ATUALIZADO COM IMAGEM
-            const modalEditar = document.getElementById('modalEditar');
-            
-            if (modalEditar) {
-                modalEditar.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    
-                    const id = button.getAttribute('data-id');
-                    const numero = button.getAttribute('data-numero');
-                    const nome = button.getAttribute('data-nome');
-                    const tipo1 = button.getAttribute('data-tipo1');
-                    const tipo2 = button.getAttribute('data-tipo2');
-                    const descricao = button.getAttribute('data-descricao');
-                    const altura = button.getAttribute('data-altura');
-                    const peso = button.getAttribute('data-peso');
-                    const habilidade = button.getAttribute('data-habilidade');
-                    const imagem = button.getAttribute('data-imagem');
-                    
-                    document.getElementById('formEditar').action = `/pokemons/editar/${id}`;
-                    document.getElementById('editarId').value = id;
-                    document.getElementById('editarNumero').value = numero;
-                    document.getElementById('editarNome').value = nome;
-                    document.getElementById('editarTipo1').value = tipo1;
-                    document.getElementById('editarTipo2').value = tipo2 || '';
-                    document.getElementById('editarDescricao').value = descricao || '';
-                    document.getElementById('editarAltura').value = altura || '';
-                    document.getElementById('editarPeso').value = peso || '';
-                    document.getElementById('editarHabilidade').value = habilidade || '';
-                    
-                    // Mostrar imagem atual no edit
-                    const currentImageContainer = document.getElementById('currentImage');
-                    if (imagem) {
-                        currentImageContainer.innerHTML = `<img src="${imagem}" alt="${nome}" class="current-image">`;
-                    } else {
-                        currentImageContainer.innerHTML = '<span class="text-muted">Nenhuma imagem</span>';
-                    }
-                    
-                    // Limpar previews
-                    document.getElementById('previewEditarImagem').style.display = 'none';
-                    document.getElementById('editarImagemInput').value = '';
-                });
-            }
-
-            // Limpar previews quando modal for fechado
-            const modalAdicionar = document.getElementById('modalPokemon');
-            if (modalAdicionar) {
-                modalAdicionar.addEventListener('hidden.bs.modal', function() {
-                    document.getElementById('previewImagem').style.display = 'none';
-                    document.getElementById('imagemInput').value = '';
-                });
-            }
-        });
-    </script>
+    <script src="/js/pokemons.js"></script>
 </body>
 </html>

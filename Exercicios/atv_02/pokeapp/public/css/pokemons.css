@@ -1,0 +1,78 @@
+.type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #3498db;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.custom-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.btn-group-spaced {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.detail-row {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #555;
+    min-width: 120px;
+}
+
+.detail-value {
+    color: #333;
+}
+
+.pokemon-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #dee2e6;
+}
+
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #dee2e6;
+    display: none;
+    margin-top: 10px;
+}
+
+.current-image {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #28a745;
+}
+
+.no-image {
+    width: 60px;
+    height: 60px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.8rem;
+}

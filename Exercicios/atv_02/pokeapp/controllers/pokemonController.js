@@ -70,7 +70,7 @@ router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
     }
 });
 
-// DELETAR POKÉMON (mantido igual)
+// DELETAR POKÉMON 
 router.post("/deletar/:id", async (req, res) => {
     try {
         const pokemon = await Pokemon.findByPk(req.params.id);

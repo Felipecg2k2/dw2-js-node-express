@@ -3,12 +3,10 @@ import User from '../models/userModel.js';
 
 const router = express.Router();
 
-// ========== PÁGINAS ==========
-
 // Página de login
 router.get("/login", (req, res) => {
     if (req.session.user) {
-        return res.redirect('/'); // ✅ Redireciona para index
+        return res.redirect('/'); 
     }
     
     res.render('login', {
@@ -24,10 +22,6 @@ router.get("/registro", (req, res) => {
         error: null
     });
 });
-
-// ✅ REMOVIDO: Lista de usuários (admin)
-
-// ========== OPERAÇÕES CRUD ==========
 
 // Registrar novo usuário
 router.post("/registro", async (req, res) => {
@@ -70,7 +64,7 @@ router.post("/login", async (req, res) => {
                 nome: usuario.nome,
                 email: usuario.email
             };
-            res.redirect('/'); // ✅ Redireciona para index/dashboard
+            res.redirect('/'); 
         } else {
             res.render('login', {
                 titulo: "Login - PokéApp",

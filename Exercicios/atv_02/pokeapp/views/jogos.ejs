@@ -5,106 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= titulo %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .custom-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: none;
-        }
-        
-        .btn-group-spaced {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .type-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        /* ESTILOS PARA IMAGENS CORRIGIDOS */
-        .jogo-image {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-            transition: transform 0.2s ease;
-        }
-        
-        .jogo-image:hover {
-            transform: scale(1.05);
-            cursor: pointer;
-        }
-        
-        .image-preview {
-            max-width: 200px;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #28a745;
-            display: none;
-            margin-top: 10px;
-        }
-        
-        .current-image {
-            max-width: 150px;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #28a745;
-        }
-        
-        .no-image {
-            width: 80px;
-            height: 60px;
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 5px;
-        }
-
-        .image-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 6px;
-            font-size: 0.8rem;
-        }
-
-        .image-container:hover .image-overlay {
-            opacity: 1;
-        }
-    </style>
+    <link href="/css/jogos.css" rel="stylesheet">
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -156,10 +57,10 @@
                                         <td>
                                             <% if (jogo.imagem) { %>
                                                 <div class="image-container">
-                                                    <!-- CORREÇÃO AQUI: caminho correto para uploads/jogos/ -->
                                                     <img src="/uploads/jogos/<%= jogo.imagem %>" alt="<%= jogo.nome %>" class="jogo-image">
                                                     <div class="image-overlay" onclick="ampliarImagem('/uploads/jogos/<%= jogo.imagem %>', '<%= jogo.nome %>')">
                                                         Ampliar Imagem
+                                                    </div>
                                                 </div>
                                             <% } else { %>
                                                 <div class="no-image">Sem imagem</div>
@@ -174,7 +75,6 @@
                                         </td>
                                         <td>
                                             <div class="btn-group-spaced">
-                                                <!-- BOTÃO EDITAR -->
                                                 <button class="btn btn-sm btn-outline-warning" 
                                                         data-bs-toggle="modal" 
                                                         data-bs-target="#modalEditarJogo"
@@ -186,7 +86,6 @@
                                                     ✏️ Editar
                                                 </button>
                                                 
-                                                <!-- BOTÃO DELETAR -->
                                                 <form action="/jogos/deletar/<%= jogo.id %>" method="POST" class="d-inline">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="btn btn-sm btn-outline-danger" 
@@ -232,7 +131,6 @@
                             <label class="form-label">Ano de Lançamento *</label>
                             <input type="number" class="form-control" name="ano" min="1990" max="2030" placeholder="1996" required>
                         </div>
-                        <!-- CAMPO IMAGEM DO JOGO -->
                         <div class="mb-3">
                             <label class="form-label">Imagem do Jogo</label>
                             <input type="file" class="form-control" name="imagem" id="imagemInputJogo" accept="image/*" onchange="previewImage(this, 'previewImagemJogo')">
@@ -272,17 +170,12 @@
                             <label class="form-label">Ano de Lançamento *</label>
                             <input type="number" class="form-control" name="ano" id="editarJogoAno" required>
                         </div>
-                        <!-- CAMPO IMAGEM DO JOGO NO EDIT -->
                         <div class="mb-3">
                             <label class="form-label">Imagem do Jogo</label>
-                            
-                            <!-- Imagem atual -->
                             <div id="currentImageContainerJogo" class="mb-2">
                                 <small class="text-muted">Imagem atual:</small>
                                 <div id="currentImageJogo" class="mt-1"></div>
                             </div>
-                            
-                            <!-- Upload nova imagem -->
                             <input type="file" class="form-control" name="imagem" id="editarImagemInputJogo" accept="image/*" onchange="previewImage(this, 'previewEditarImagemJogo')">
                             <small class="text-muted">Deixe em branco para manter a imagem atual</small>
                             <img id="previewEditarImagemJogo" class="image-preview" alt="Preview da nova imagem">
@@ -313,99 +206,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Função para preview de imagem
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            const file = input.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                
-                reader.readAsDataURL(file);
-            } else {
-                preview.style.display = 'none';
-            }
-        }
-
-        // Função para ampliar imagem
-        function ampliarImagem(src, nome) {
-            document.getElementById('imagemAmpliada').src = src;
-            document.getElementById('tituloImagemAmpliada').textContent = nome;
-            const modal = new bootstrap.Modal(document.getElementById('modalAmpliarImagem'));
-            modal.show();
-        }
-
-        // Preencher modal de edição com dados do Jogo
-        document.addEventListener('DOMContentLoaded', function() {
-            const modalEditarJogo = document.getElementById('modalEditarJogo');
-            
-            modalEditarJogo.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                
-                const id = button.getAttribute('data-id');
-                const nome = button.getAttribute('data-nome');
-                const console = button.getAttribute('data-console');
-                const ano = button.getAttribute('data-ano');
-                const imagem = button.getAttribute('data-imagem');
-                
-                document.getElementById('formEditarJogo').action = `/jogos/editar/${id}`;
-                document.getElementById('editarJogoId').value = id;
-                document.getElementById('editarJogoNome').value = nome;
-                document.getElementById('editarJogoConsole').value = console;
-                document.getElementById('editarJogoAno').value = ano;
-                
-                // Mostrar imagem atual no edit - CORREÇÃO AQUI TAMBÉM
-                const currentImageContainer = document.getElementById('currentImageJogo');
-                if (imagem) {
-                    currentImageContainer.innerHTML = `
-                        <img src="/uploads/jogos/${imagem}" alt="${nome}" class="current-image">
-                        <div class="mt-1">
-                            <small class="text-muted">${imagem}</small>
-                        </div>
-                    `;
-                } else {
-                    currentImageContainer.innerHTML = '<span class="text-muted">Nenhuma imagem cadastrada</span>';
-                }
-                
-                // Limpar previews
-                document.getElementById('previewEditarImagemJogo').style.display = 'none';
-                document.getElementById('editarImagemInputJogo').value = '';
-            });
-
-            // Limpar previews quando modal for fechado
-            const modalAdicionar = document.getElementById('modalJogo');
-            if (modalAdicionar) {
-                modalAdicionar.addEventListener('hidden.bs.modal', function() {
-                    document.getElementById('previewImagemJogo').style.display = 'none';
-                    document.getElementById('imagemInputJogo').value = '';
-                });
-            }
-
-            // Adicionar evento de clique nas imagens para ampliar
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('jogo-image')) {
-                    const src = e.target.src;
-                    const alt = e.target.alt;
-                    ampliarImagem(src, alt);
-                }
-            });
-
-            // Auto-dismiss alerts após 5 segundos
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 5000);
-            });
-        });
-    </script>
+    <script src="/js/jogos.js"></script>
 </body>
 </html>

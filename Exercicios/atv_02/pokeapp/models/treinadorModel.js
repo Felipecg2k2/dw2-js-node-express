@@ -15,7 +15,6 @@ const Treinador = sequelize.define('Treinador', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    // Para Sequelize, vamos armazenar como JSON ou criar tabela de relação
     equipe: {
         type: DataTypes.JSON, // Armazena array de IDs como JSON
         allowNull: true,
@@ -28,7 +27,7 @@ const Treinador = sequelize.define('Treinador', {
 
 // Sincronizar tabela
 Treinador.sync({ force: false })
-    .then(() => console.log('✅ Tabela Treinador sincronizada'))
-    .catch(err => console.error('❌ Erro ao sincronizar Treinador:', err));
+    .then(() => console.log(' Tabela Treinador sincronizada'))
+    .catch(err => console.error(' Erro ao sincronizar Treinador:', err));
 
 export default Treinador;

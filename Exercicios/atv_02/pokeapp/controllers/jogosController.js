@@ -6,7 +6,6 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Para usar __dirname com ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -36,29 +35,29 @@ router.get("/", async (req, res) => {
 // ========== CREATE - SALVAR NOVO JOGO COM IMAGEM ==========
 router.post("/", uploadSingle('imagem'), async (req, res) => {
     try {
-        const { nome, console: consoleName, ano } = req.body; // ← CORREÇÃO AQUI: renomeei 'console' para 'consoleName'
+        const { nome, console: consoleName, ano } = req.body; 
         
-        console.log('📥 Dados recebidos:', { nome, console: consoleName, ano });
-        console.log('📁 Arquivo recebido:', req.file);
+        console.log(' Dados recebidos:', { nome, console: consoleName, ano });
+        console.log(' Arquivo recebido:', req.file);
 
         const jogoData = { 
             nome, 
-            console: consoleName, // ← CORREÇÃO AQUI: use o nome correto
+            console: consoleName, 
             ano 
         };
 
         // Se há arquivo de imagem, adicionar APENAS O NOME DO ARQUIVO ao banco
         if (req.file) {
             jogoData.imagem = req.file.filename;
-            console.log('🖼️ Nome da imagem salva no banco:', jogoData.imagem);
+            console.log(' Nome da imagem salva no banco:', jogoData.imagem);
         }
         
         const novoJogo = await Jogo.create(jogoData);
-        console.log('✅ Jogo criado no banco:', novoJogo.toJSON());
+        console.log(' Jogo criado no banco:', novoJogo.toJSON());
         
         res.redirect('/jogos?success=Jogo criado com sucesso!');
     } catch (error) {
-        console.error('❌ Erro ao criar jogo:', error);
+        console.error(' Erro ao criar jogo:', error);
         const jogos = await Jogo.findAll({ order: [['ano', 'ASC']] });
         
         res.render('jogos', {
@@ -75,8 +74,8 @@ router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
         const { id } = req.params;
         const { nome, console: consoleName, ano } = req.body; // ← CORREÇÃO AQUI também
         
-        console.log('📥 Atualizando jogo ID:', id);
-        console.log('📁 Novo arquivo:', req.file);
+        console.log(' Atualizando jogo ID:', id);
+        console.log(' Novo arquivo:', req.file);
 
         const jogo = await Jogo.findByPk(id);
         
@@ -86,31 +85,30 @@ router.post("/editar/:id", uploadSingle('imagem'), async (req, res) => {
 
         const updateData = { 
             nome, 
-            console: consoleName, // ← CORREÇÃO AQUI também
+            console: consoleName, 
             ano 
         };
 
-        // Se há nova imagem, atualizar APENAS O NOME DO ARQUIVO no banco
         if (req.file) {
             // Deletar imagem antiga se existir
             if (jogo.imagem) {
                 const caminhoImagemAntiga = path.join(__dirname, '../public/uploads/jogos', jogo.imagem);
                 if (fs.existsSync(caminhoImagemAntiga)) {
                     fs.unlinkSync(caminhoImagemAntiga);
-                    console.log('🗑️ Imagem antiga deletada:', jogo.imagem);
+                    console.log(' Imagem antiga deletada:', jogo.imagem);
                 }
             }
             
             updateData.imagem = req.file.filename;
-            console.log('🖼️ Nova imagem salva no banco:', updateData.imagem);
+            console.log(' Nova imagem salva no banco:', updateData.imagem);
         }
         
         await jogo.update(updateData);
-        console.log('✅ Jogo atualizado no banco');
+        console.log(' Jogo atualizado no banco');
         
         res.redirect('/jogos?success=Jogo atualizado com sucesso!');
     } catch (error) {
-        console.error('❌ Erro ao atualizar jogo:', error);
+        console.error(' Erro ao atualizar jogo:', error);
         res.redirect('/jogos?error=Erro ao atualizar jogo');
     }
 });
@@ -127,18 +125,18 @@ router.post("/deletar/:id", async (req, res) => {
                 const caminhoImagem = path.join(__dirname, '../public/uploads/jogos', jogo.imagem);
                 if (fs.existsSync(caminhoImagem)) {
                     fs.unlinkSync(caminhoImagem);
-                    console.log('🗑️ Imagem deletada:', jogo.imagem);
+                    console.log(' Imagem deletada:', jogo.imagem);
                 }
             }
             
             await jogo.destroy();
-            console.log('✅ Jogo deletado:', id);
+            console.log(' Jogo deletado:', id);
             res.redirect('/jogos?success=Jogo deletado com sucesso!');
         } else {
             res.redirect('/jogos?error=Jogo não encontrado');
         }
     } catch (error) {
-        console.error('❌ Erro ao deletar jogo:', error);
+        console.error(' Erro ao deletar jogo:', error);
         res.redirect('/jogos?error=Erro ao deletar jogo');
     }
 });

@@ -53,8 +53,8 @@ const Pokemon = sequelize.define('Pokemon', {
 
 // Sincronizar apenas a tabela (sem dados iniciais)
 Pokemon.sync({ force: false })
-    .then(() => console.log('✅ Tabela Pokemon sincronizada'))
-    .catch(err => console.error('❌ Erro ao sincronizar Pokemon:', err));
+    .then(() => console.log(' Tabela Pokemon sincronizada'))
+    .catch(err => console.error(' Erro ao sincronizar Pokemon:', err));
 
 export { Pokemon, TIPOS_POKEMON };
 export default Pokemon;

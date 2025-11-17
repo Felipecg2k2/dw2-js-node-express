@@ -153,53 +153,205 @@
         </div>
     </div>
 
-    <!-- MODAIS (mantidos no HTML) -->
+    <!-- MODAL ADICIONAR TREINADOR COMPLETO -->
     <div class="modal fade" id="modalTreinador" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <!-- Conteúdo do modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Treinador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/treinadores" method="POST" id="formTreinador" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome do Treinador *</label>
+                                    <input type="text" class="form-control" name="nome" placeholder="Ex: Ash Ketchum" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Cidade *</label>
+                                    <input type="text" class="form-control" name="cidade" placeholder="Ex: Pallet" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Imagem do Treinador</label>
+                                    <input type="file" class="form-control" name="imagem" id="imagemInputTreinador" accept="image/*" onchange="previewImage(this, 'previewImagemTreinador')">
+                                    <small class="text-muted">Formatos: JPG, PNG, GIF. Máx: 5MB</small>
+                                    <img id="previewImagemTreinador" class="image-preview" alt="Preview da imagem">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Equipe Pokémon (<span id="contadorEquipeAdicionar">0</span>/6)</h6>
+                                <div class="equipe-slots" id="equipeSlotsAdicionar">
+                                    <!-- Slots serão gerados via JavaScript -->
+                                </div>
+                                <input type="hidden" name="equipe" id="equipeInputAdicionar" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar Treinador</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
+    <!-- MODAL EDITAR TREINADOR COMPLETO -->
     <div class="modal fade" id="modalEditarTreinador" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <!-- Conteúdo do modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Treinador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/treinadores/editar/" method="POST" id="formEditarTreinador" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="editarTreinadorId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome do Treinador *</label>
+                                    <input type="text" class="form-control" name="nome" id="editarTreinadorNome" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Cidade *</label>
+                                    <input type="text" class="form-control" name="cidade" id="editarTreinadorCidade" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Imagem do Treinador</label>
+                                    <div id="currentImageContainerTreinador" class="mb-2">
+                                        <small class="text-muted">Imagem atual:</small>
+                                        <div id="currentImageTreinador" class="mt-1"></div>
+                                    </div>
+                                    <input type="file" class="form-control" name="imagem" id="editarImagemInputTreinador" accept="image/*" onchange="previewImage(this, 'previewEditarImagemTreinador')">
+                                    <small class="text-muted">Deixe em branco para manter a imagem atual</small>
+                                    <img id="previewEditarImagemTreinador" class="image-preview" alt="Preview da nova imagem">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Equipe Pokémon (<span id="contadorEquipeEditar">0</span>/6)</h6>
+                                <div class="equipe-slots" id="equipeSlotsEditar">
+                                    <!-- Slots serão gerados via JavaScript -->
+                                </div>
+                                <input type="hidden" name="equipe" id="equipeInputEditar" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Atualizar Treinador</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
+    <!-- MODAL SELECIONAR POKÉMON COMPLETO -->
     <div class="modal fade" id="modalSelecionarPokemon" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <!-- Conteúdo do modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Selecionar Pokémon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="filtroPokemon" placeholder="Buscar Pokémon...">
+                    </div>
+                    <div class="pokemon-lista" style="max-height: 300px; overflow-y: auto;">
+                        <% pokemons.forEach((pokemon) => { %>
+                            <div class="pokemon-item cursor-pointer" 
+                                 data-pokemon-id="<%= pokemon.id %>"
+                                 data-pokemon-nome="<%= pokemon.nome %>"
+                                 data-pokemon-tipo="<%= pokemon.tipo1 %><% if (pokemon.tipo2) { %>/<%= pokemon.tipo2 %><% } %>"
+                                 onclick="selecionarPokemon(this)">
+                                <strong><%= pokemon.nome %></strong> - #<%= pokemon.numero %>
+                                <br>
+                                <small class="text-muted"><%= pokemon.tipo1 %><% if (pokemon.tipo2) { %>/<%= pokemon.tipo2 %><% } %></small>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL DETALHES DO POKÉMON COMPLETO -->
     <div class="modal fade" id="modalDetalhesPokemon" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <!-- Conteúdo do modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Pokémon: <span id="detalhesPokemonNome"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div id="detalhesPokemonImagemContainer" class="mb-3">
+                                <img id="detalhesPokemonImagem" src="" alt="" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;">
+                            </div>
+                            <div class="type-badges-container" id="detalhesPokemonTipos"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="detail-row">
+                                <span class="detail-label">Número:</span>
+                                <span class="detail-value" id="detalhesPokemonNumero"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Altura:</span>
+                                <span class="detail-value" id="detalhesPokemonAltura"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Peso:</span>
+                                <span class="detail-value" id="detalhesPokemonPeso"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Habilidade:</span>
+                                <span class="detail-value" id="detalhesPokemonHabilidade"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="detail-row">
+                                <span class="detail-label">Descrição:</span>
+                                <p id="detalhesPokemonDescricao" class="mt-1 text-muted"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL PARA AMPLIAR IMAGEM COMPLETO -->
     <div class="modal fade" id="modalAmpliarImagem" tabindex="-1">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
-                <!-- Conteúdo do modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloImagemAmpliada"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="imagemAmpliada" src="" alt="" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
+                </div>
             </div>
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Passar dados do EJS para o JavaScript - CORRIGIDO
-    window.pokemonsData = `<%- JSON.stringify(pokemons || []) %>`;
-    console.log('Pokémons carregados:', window.pokemonsData.length);
-</script>
-<script src="/js/treinadores.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.pokemonsData = `<%- JSON.stringify(pokemons || []) %>`;
+        console.log('Pokémons carregados:', window.pokemonsData ? window.pokemonsData.length : 0);
+    </script>
+    <script src="/js/treinadores.js"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@ const Jogo = sequelize.define('Jogo', {
 });
 
 Jogo.sync({ force: false })
-    .then(() => console.log('✅ Tabela Jogo sincronizada'))
-    .catch(err => console.error('❌ Erro ao sincronizar Jogo:', err));
+    .then(() => console.log(' Tabela Jogo sincronizada'))
+    .catch(err => console.error(' Erro ao sincronizar Jogo:', err));
 
 export default Jogo;
